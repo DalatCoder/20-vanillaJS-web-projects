@@ -6,7 +6,7 @@ const template = `
       <h2>Register With Us</h2>
       <div class="form-control">
         <label for="username">Username</label>
-        <input type="text" id="username" placeholder="Enter username">
+        <input type="text" id="username" placeholder="Enter username" autocomplete="off">
         <small class="invisible">Error message</small>
       </div>
       <div class="form-control">
@@ -45,95 +45,133 @@ const email = document.getElementById('email');
 const password = document.getElementById('password');
 const password2 = document.getElementById('password2');
 
-const showError = (input, message) => {
-  const formControl = input.parentElement;
+const formControls = Array.from(document.querySelectorAll('.form-control'));
 
-  formControl.querySelector('small').innerText = message;
-  formControl.classList.remove('success');
-  formControl.classList.add('error');
-};
+// const showError = (input, message) => {
+//   const formControl = input.parentElement;
 
-const showSuccess = (input) => {
-  const formControl = input.parentElement;
-  formControl.classList.remove('error');
-  formControl.classList.add('success');
-};
+//   formControl.querySelector('small').innerText = message;
+//   formControl.classList.remove('success');
+//   formControl.classList.add('error');
+// };
 
-const checkEmail = (input) => {
-  const email = input.value.trim();
-  if (email.length < 1) {
-    return;
-  }
+// const showSuccess = (input) => {
+//   const formControl = input.parentElement;
+//   formControl.classList.remove('error');
+//   formControl.classList.add('success');
+// };
 
-  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+// const checkEmail = (input) => {
+//   const email = input.value.trim();
+//   if (email.length < 1) {
+//     return;
+//   }
 
-  if (re.test(email.toLowerCase())) {
-    showSuccess(input);
-  } else {
-    showError(input, `${getFieldName(input)} is in valid!`);
-  }
-};
+//   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+//   if (re.test(email.toLowerCase())) {
+//     showSuccess(input);
+//   } else {
+//     showError(input, `${getFieldName(input)} is in valid!`);
+//   }
+// };
+
+// const getFieldName = (input) => {
+//   return input.parentElement.querySelector('label').innerText;
+// };
+
+// const checkRequired = (inputs) => {
+//   inputs.forEach((input) => {
+//     if (input.value.trim().length === 0) {
+//       showError(input, `${getFieldName(input)} is required!`);
+//       return;
+//     }
+
+//     showSuccess(input);
+//   });
+// };
+
+// const checkLength = (input, min, max) => {
+//   const length = input.value.trim().length;
+//   if (length < 1) {
+//     return;
+//   }
+
+//   if (length < min) {
+//     showError(
+//       input,
+//       `${getFieldName(input)} must be at least ${min} characters!`
+//     );
+//   } else if (length > max) {
+//     showError(
+//       input,
+//       `${getFieldName(input)} must be less than ${max} characters!`
+//     );
+//   } else {
+//     showSuccess(input);
+//   }
+// };
+
+// const checkPasswordMatch = (passwordInput, confirmPasswordInput) => {
+//   const password = passwordInput.value.trim();
+//   const confirmPassword = confirmPasswordInput.value.trim();
+
+//   if (confirmPassword.length < 1) {
+//     return;
+//   }
+
+//   if (password !== confirmPassword) {
+//     showError(
+//       confirmPasswordInput,
+//       `${getFieldName(confirmPasswordInput)} does not match!`
+//     );
+//   } else {
+//     showSuccess(confirmPasswordInput);
+//   }
+// };
 
 const getFieldName = (input) => {
-  return input.parentElement.querySelector('label').innerText;
+  const { id } = input;
+  return document.querySelector(`label[for="${id}"]`).innerText;
 };
 
-const checkRequired = (inputs) => {
-  inputs.forEach((input) => {
-    if (input.value.trim().length === 0) {
-      showError(input, `${getFieldName(input)} is required!`);
-      return;
-    }
+const onUserNameInput = (event) => {
+  const value = event.target.value.trim();
+  let errorMessage = '';
 
-    showSuccess(input);
-  });
-};
+  if (value.length === 0) {
+    errorMessage = 'Username is required!';
+  } else if (value.length < 6) {
+    errorMessage = 'Username must be at least 6 characters!';
+  } else if (value.length > 15) {
+    errorMessage = 'Username must be less than 16 characters!';
+  }
 
-const checkLength = (input, min, max) => {
-  const length = input.value.trim().length;
-  if (length < 1) {
+  const errorElement = event.target.parentElement.querySelector('small');
+
+  if (errorMessage) {
+    event.target.classList.remove('success');
+    event.target.classList.add('error');
+
+    errorElement.innerText = errorMessage;
+    errorElement.classList.remove('invisible');
+    errorElement.classList.add('visible');
+
     return;
   }
 
-  if (length < min) {
-    showError(
-      input,
-      `${getFieldName(input)} must be at least ${min} characters!`
-    );
-  } else if (length > max) {
-    showError(
-      input,
-      `${getFieldName(input)} must be less than ${max} characters!`
-    );
-  } else {
-    showSuccess(input);
-  }
+  event.target.classList.remove('error');
+  event.target.classList.add('success');
+  errorElement.classList.remove('visible');
+  errorElement.classList.add('invisible');
 };
 
-const checkPasswordMatch = (passwordInput, confirmPasswordInput) => {
-  const password = passwordInput.value.trim();
-  const confirmPassword = confirmPasswordInput.value.trim();
+const onEmailInput = (event) => {};
 
-  if (confirmPassword.length < 1) {
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    showError(
-      confirmPasswordInput,
-      `${getFieldName(confirmPasswordInput)} does not match!`
-    );
-  } else {
-    showSuccess(confirmPasswordInput);
-  }
-};
+username.addEventListener('input', debounce(onUserNameInput));
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
 
-  checkRequired([username, email, password, password2]);
-  checkLength(username, 6, 15);
-  checkLength(password, 6, 25);
-  checkEmail(email);
-  checkPasswordMatch(password, password2);
+  console.log('Hello world');
 });
