@@ -11,7 +11,7 @@ const template = `
       </div>
       <div class="form-control">
         <label for="email">Email</label>
-        <input type="text" id="email" placeholder="Enter email">
+        <input type="text" id="email" placeholder="Enter email" autocomplete="off">
         <small class="invisible">Error message</small>
       </div>
       <div class="form-control">
@@ -47,92 +47,25 @@ const password2 = document.getElementById('password2');
 
 const formControls = Array.from(document.querySelectorAll('.form-control'));
 
-// const showError = (input, message) => {
-//   const formControl = input.parentElement;
-
-//   formControl.querySelector('small').innerText = message;
-//   formControl.classList.remove('success');
-//   formControl.classList.add('error');
-// };
-
-// const showSuccess = (input) => {
-//   const formControl = input.parentElement;
-//   formControl.classList.remove('error');
-//   formControl.classList.add('success');
-// };
-
-// const checkEmail = (input) => {
-//   const email = input.value.trim();
-//   if (email.length < 1) {
-//     return;
-//   }
-
-//   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-//   if (re.test(email.toLowerCase())) {
-//     showSuccess(input);
-//   } else {
-//     showError(input, `${getFieldName(input)} is in valid!`);
-//   }
-// };
-
-// const getFieldName = (input) => {
-//   return input.parentElement.querySelector('label').innerText;
-// };
-
-// const checkRequired = (inputs) => {
-//   inputs.forEach((input) => {
-//     if (input.value.trim().length === 0) {
-//       showError(input, `${getFieldName(input)} is required!`);
-//       return;
-//     }
-
-//     showSuccess(input);
-//   });
-// };
-
-// const checkLength = (input, min, max) => {
-//   const length = input.value.trim().length;
-//   if (length < 1) {
-//     return;
-//   }
-
-//   if (length < min) {
-//     showError(
-//       input,
-//       `${getFieldName(input)} must be at least ${min} characters!`
-//     );
-//   } else if (length > max) {
-//     showError(
-//       input,
-//       `${getFieldName(input)} must be less than ${max} characters!`
-//     );
-//   } else {
-//     showSuccess(input);
-//   }
-// };
-
-// const checkPasswordMatch = (passwordInput, confirmPasswordInput) => {
-//   const password = passwordInput.value.trim();
-//   const confirmPassword = confirmPasswordInput.value.trim();
-
-//   if (confirmPassword.length < 1) {
-//     return;
-//   }
-
-//   if (password !== confirmPassword) {
-//     showError(
-//       confirmPasswordInput,
-//       `${getFieldName(confirmPasswordInput)} does not match!`
-//     );
-//   } else {
-//     showSuccess(confirmPasswordInput);
-//   }
-// };
-
 const getFieldName = (input) => {
   const { id } = input;
   return document.querySelector(`label[for="${id}"]`).innerText;
+};
+
+const responseOnError = (target, errorElement, errorMessage) => {
+  target.classList.remove('success');
+  target.classList.add('error');
+
+  errorElement.innerText = errorMessage;
+  errorElement.classList.remove('invisible');
+  errorElement.classList.add('visible');
+};
+
+const responseOnSuccess = (target, errorElement) => {
+  target.classList.remove('error');
+  target.classList.add('success');
+  errorElement.classList.remove('visible');
+  errorElement.classList.add('invisible');
 };
 
 const onUserNameInput = (event) => {
@@ -150,25 +83,62 @@ const onUserNameInput = (event) => {
   const errorElement = event.target.parentElement.querySelector('small');
 
   if (errorMessage) {
-    event.target.classList.remove('success');
-    event.target.classList.add('error');
-
-    errorElement.innerText = errorMessage;
-    errorElement.classList.remove('invisible');
-    errorElement.classList.add('visible');
-
+    responseOnError(event.target, errorElement, errorMessage);
     return;
   }
 
-  event.target.classList.remove('error');
-  event.target.classList.add('success');
-  errorElement.classList.remove('visible');
-  errorElement.classList.add('invisible');
+  responseOnSuccess(event.target, errorElement);
 };
 
-const onEmailInput = (event) => {};
+const onEmailInput = (event) => {
+  const email = event.target.value.trim();
+
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  let errorMessage = '';
+
+  if (email.length === 0) {
+    errorMessage = 'Email is required!';
+  } else if (!re.test(email.toLowerCase())) {
+    errorMessage = 'Email is invalid!';
+  }
+
+  const errorElement = event.target.parentElement.querySelector('small');
+
+  if (errorMessage) {
+    responseOnError(event.target, errorElement, errorMessage);
+    return;
+  }
+
+  responseOnSuccess(event.target, errorElement);
+};
+
+const onPasswordInput = (event) => {
+  const password = event.target.value.trim();
+
+  let errorMsg;
+  const errorElement = event.target.parentElement.parentElement.querySelector(
+    'small'
+  );
+
+  if (password.length === 0) {
+    errorMsg = 'Password is required!';
+  } else if (password.length < 6) {
+    errorMsg = 'Password must be at least 6 characters!';
+  } else if (password.length > 15) {
+    errorMsg = 'Password must be less than 15 characters!';
+  }
+
+  if (errorMsg) {
+    responseOnError(event.target, errorElement, errorMsg);
+    return;
+  }
+
+  responseOnSuccess(event.target, errorElement);
+};
 
 username.addEventListener('input', debounce(onUserNameInput));
+email.addEventListener('input', debounce(onEmailInput));
+password.addEventListener('input', debounce(onPasswordInput));
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
