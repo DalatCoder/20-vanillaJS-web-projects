@@ -4,8 +4,6 @@ const count = document.getElementById('count');
 const total = document.getElementById('total');
 const movieSelect = document.getElementById('movie');
 
-let tickedPrice = parseFloat(movieSelect.value);
-
 // Populate data from local storage
 populateUI();
 
@@ -25,6 +23,7 @@ const updateSelectedCount = () => {
   localStorage.setItem('selectedSeats', JSON.stringify(seatsIndex));
 
   const selectedSeatsCount = selectedSeats.length;
+  const tickedPrice = movieSelect.value;
 
   count.innerText = selectedSeatsCount;
   total.innerText = selectedSeatsCount * tickedPrice;
@@ -51,7 +50,6 @@ function populateUI() {
 // Movie select event
 movieSelect.addEventListener('change', (event) => {
   const { target } = event;
-  tickedPrice = parseFloat(target.value);
 
   setMovieData(target.selectedIndex, target.value);
   updateSelectedCount();
@@ -70,5 +68,4 @@ container.addEventListener('click', (event) => {
   }
 });
 
-// Initial count and total set
 updateSelectedCount();
