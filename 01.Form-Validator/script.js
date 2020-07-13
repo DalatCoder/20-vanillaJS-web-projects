@@ -18,8 +18,8 @@ const template = `
         <label for="password">Password</label>
         <div class="password-control">
           <input type="password" id="password" placeholder="Enter password">
-          <div class="password-icon"><i class="fas fa-eye"></i></div>
-          <div class="password-icon hide"><i class="fas fa-eye-slash"></i></div>
+          <div id="passShow" class="password-icon"><i class="fas fa-eye"></i></div>
+          <div id="passHide" class="password-icon hide"><i class="fas fa-eye-slash"></i></div>
         </div>
         <small class="invisible">Error message</small>
       </div>
@@ -27,8 +27,8 @@ const template = `
         <label for="password2">Confirm Password</label>
         <div class="password-control">
           <input type="password" id="password2" placeholder="Enter password again">
-          <div class="password-icon"><i class="fas fa-eye"></i></div>
-          <div class="password-icon hide"><i class="fas fa-eye-slash"></i></div>
+          <div id="passShow2" class="password-icon"><i class="fas fa-eye"></i></div>
+          <div id="passHide2" class="password-icon hide"><i class="fas fa-eye-slash"></i></div>
         </div>
         <small class="invisible">Error message</small>
       </div>
@@ -44,6 +44,10 @@ const username = document.getElementById('username');
 const email = document.getElementById('email');
 const password = document.getElementById('password');
 const password2 = document.getElementById('password2');
+const passwordShow = document.getElementById('passShow');
+const passwordHide = document.getElementById('passHide');
+const passwordShow2 = document.getElementById('passShow2');
+const passwordHide2 = document.getElementById('passHide2');
 
 const formControls = Array.from(document.querySelectorAll('.form-control'));
 
@@ -136,9 +140,69 @@ const onPasswordInput = (event) => {
   responseOnSuccess(event.target, errorElement);
 };
 
-username.addEventListener('input', debounce(onUserNameInput));
-email.addEventListener('input', debounce(onEmailInput));
-password.addEventListener('input', debounce(onPasswordInput));
+const onConfirmPasswordInput = (event) => {
+  const confirmPass = event.target.value.trim();
+  const pass = password.value;
+
+  let errorMsg;
+  const errorElement = event.target.parentElement.parentElement.querySelector(
+    'small'
+  );
+
+  if (confirmPass.length === 0) {
+    errorMsg = 'Confirm password is required!';
+  } else if (confirmPass !== pass) {
+    errorMsg = 'Password confirm does not match!';
+  }
+
+  if (errorMsg) {
+    responseOnError(event.target, errorElement, errorMsg);
+    return;
+  }
+
+  responseOnSuccess(event.target, errorElement);
+};
+
+username.addEventListener('input', debounce(onUserNameInput, 300));
+email.addEventListener('input', debounce(onEmailInput, 300));
+password.addEventListener('input', debounce(onPasswordInput, 300));
+password2.addEventListener('input', debounce(onConfirmPasswordInput, 300));
+
+passwordShow.addEventListener('click', (e) => {
+  password.setAttribute('type', 'text');
+
+  passwordShow.classList.add('hide');
+  passwordShow.classList.remove('show');
+  passwordHide.classList.remove('hide');
+  passwordHide.classList.add('show');
+});
+
+passwordHide.addEventListener('click', (e) => {
+  password.setAttribute('type', 'password');
+
+  passwordHide.classList.remove('show');
+  passwordHide.classList.add('hide');
+  passwordShow.classList.remove('hide');
+  passwordShow.classList.add('show');
+});
+
+passwordShow2.addEventListener('click', (e) => {
+  password2.setAttribute('type', 'text');
+
+  passwordShow2.classList.add('hide');
+  passwordShow2.classList.remove('show');
+  passwordHide2.classList.remove('hide');
+  passwordHide2.classList.add('show');
+});
+
+passwordHide2.addEventListener('click', (e) => {
+  password2.setAttribute('type', 'password');
+
+  passwordHide2.classList.remove('show');
+  passwordHide2.classList.add('hide');
+  passwordShow2.classList.remove('hide');
+  passwordShow2.classList.add('show');
+});
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();

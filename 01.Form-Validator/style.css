@@ -97,6 +97,7 @@ h2 {
 
 .password-icon {
   color: #777;
+  cursor: pointer;
   position: absolute;
   top: 50%;
   right: 3%;
