@@ -22,11 +22,12 @@ const words = ['application', 'programming', 'interface', 'wizard'];
 
 let selectedWord = words[Math.floor(Math.random() * words.length)];
 
-const correctLetters = ['w', 'i', 'z', 'a', 'r', 'd'];
+const correctLetters = [];
 const wrongLetters = [];
 
 // Show hidden word
 function displayWord() {
+  dom.wordEl.innerHTML = '';
   const letters = selectedWord.split('');
 
   for (const letter of letters) {
@@ -50,7 +51,50 @@ function displayWord() {
   }
 }
 
+//
+function showNotification() {
+  dom.notification.classList.add('show');
+
+  setTimeout(() => {
+    dom.notification.classList.remove('show');
+  }, 2000);
+}
+
+// Update the wrong letters
+function updateWrongLetters() {
+  console.log('Update wrong');
+}
+
 displayWord();
+
+window.addEventListener('keypress', (event) => {
+  if (
+    event.keyCode < 65 ||
+    event.keyCode > 122 ||
+    (90 < event.keyCode && event.keyCode < 97)
+  ) {
+    return;
+  }
+
+  const letter = event.key.toLowerCase();
+
+  if (selectedWord.includes(letter)) {
+    if (!correctLetters.includes(letter)) {
+      correctLetters.push(letter);
+      displayWord();
+    } else {
+      showNotification();
+    }
+  } else {
+    if (!wrongLetters.includes(letter)) {
+      wrongLetters.push(letter);
+
+      updateWrongLetters();
+    } else {
+      showNotification();
+    }
+  }
+});
 
 // Close popup window
 window.addEventListener('click', (event) => {
