@@ -121,3 +121,18 @@ h1 {
 .popup button:focus {
   outline: none;
 }
+
+/* NOTIFICATION CONTAINER SECTION */
+.notification-container {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 20px 25px;
+  position: absolute;
+  bottom: -60px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.notification-container.show {
+  transform: translateY(-60px);
+}
