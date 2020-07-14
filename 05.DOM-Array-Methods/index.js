@@ -89,6 +89,15 @@ function sortByRichest() {
   updateDOM();
 }
 
+// Calculate entire wealth
+function calcTotalWealth() {
+  const total = data.reduce((total, curr) => total + curr.money, 0);
+  updateDOM();
+
+  const h3 = `<h3><strong>Total wealth:</strong>${formatMoney(total)}</h3>`;
+  dom.main.innerHTML += h3;
+}
+
 // Main
 async function main() {
   try {
@@ -110,6 +119,9 @@ async function main() {
 
     // Sort by richest
     dom.sortBtn.addEventListener('click', sortByRichest);
+
+    // Calculate entire wealth
+    dom.calculateBtn.addEventListener('click', calcTotalWealth);
   } catch (err) {
     console.error(err);
     return;
