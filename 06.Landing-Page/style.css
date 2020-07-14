@@ -19,6 +19,7 @@ body {
   font-family: 'Lato', sans-serif;
 }
 
+/* NAVBAR SECTION */
 nav {
   background-color: var(--primary-color);
   border-right: 2px solid rgba(200, 200, 200, 0.1);
@@ -68,4 +69,144 @@ nav ul li a {
 
 nav ul li a:hover {
   border-bottom: 2px solid #fff;
+}
+
+/* HEADER SECTION */
+header {
+  background-color: var(--primary-color);
+  color: #fff;
+  font-size: 130%;
+  position: relative;
+  padding: 40px 15px;
+  text-align: center;
+}
+
+header p {
+  margin: 30px 0;
+}
+
+button,
+input[type='submit'] {
+  background-color: var(--secondary-color);
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  padding: 8px 12px;
+}
+
+button:focus {
+  outline: none;
+}
+
+.toggle {
+  background-color: rgba(0, 0, 0, 0.3);
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.cta-btn {
+  padding: 12px 30px;
+  font-size: 20px;
+}
+
+/* CONTAINER SECTION */
+.container {
+  padding: 15px;
+  margin: 0 auto;
+  max-width: 100%;
+  width: 800px;
+}
+
+.container p:not(:last-of-type) {
+  margin-bottom: 10px;
+}
+
+.container h2 {
+  margin-bottom: 15px;
+}
+
+.container ul {
+  margin-left: 50px;
+  margin-bottom: 10px;
+}
+
+/* MODAL SECTION */
+.modal-container {
+  background-color: rgba(0, 0, 0, 0.6);
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.modal {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  width: 400px;
+}
+
+.modal-header {
+  background: var(--primary-color);
+  color: #fff;
+  padding: 15px;
+}
+
+.modal-header h3 {
+  border-bottom: 1px solid #333;
+}
+
+.modal-content {
+  padding: 20px;
+}
+
+.modal-form div {
+  margin: 15px 0;
+}
+
+.modal-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.modal-form .form-input {
+  padding: 8px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal-form .form-input:focus {
+  outline: none;
+}
+
+.close-btn {
+  background: transparent;
+  font-size: 25px;
+  position: absolute;
+  top: 3px;
+  right: 0;
+}
+
+.modal-form input[type='submit'] {
+  font-size: 17px;
+  padding: 10px 0;
+  width: 100%;
+  display: block;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+
+.modal-form input[type='submit']:focus {
+  outline: none;
 }
