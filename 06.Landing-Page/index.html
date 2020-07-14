@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css"
+      integrity="sha512-xA6Hp6oezhjd6LiLZynuukm80f8BoZ3OpcEYaqKoCV3HKQDrYjDE1Gu8ocxgxoXmwmSzM4iqPvCsOkQNiu41GA=="
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Landing Page</title>
+  </head>
+  <body>
+    <nav>
+      <div class="logo">
+        <img src="https://randomuser.me/portraits/men/76.jpg" alt="" />
+      </div>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Portfolio</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Contact Me</a></li>
+      </ul>
+    </nav>
+
+    <header>
+      <button id="toggle" class="toggle">
+        <i class="fa fa-bars fa-2x"></i>
+      </button>
+
+      <h1>My Landing Page</h1>
+      <p>
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quia, soluta.
+      </p>
+
+      <button class="cta-btn" id="open">Sign Up</button>
+    </header>
+
+    <div class="container">
+      <h2>What is this landing page about?</h2>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, nesciunt
+        ipsa illum, asperiores reiciendis magnam molestias quam voluptates
+        incidunt quod dolore quibusdam cum nam ut est modi aspernatur!
+        Reprehenderit, eius.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat quos
+        dolor adipisci officiis labore sapiente id reprehenderit ipsam, alias
+        mollitia!
+      </p>
+
+      <h2>Tell me more!</h2>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis,
+        provident modi odit, qui eius vel ea accusantium tenetur corporis, quis
+        praesentium pariatur rerum sint ut similique voluptatum doloribus fugit
+        quo mollitia molestiae. Libero enim dignissimos modi voluptate facilis
+        sunt quibusdam!
+      </p>
+
+      <h2>Benefits</h2>
+      <ul>
+        <li>Benefit - 1</li>
+        <li>Benefit - 2</li>
+        <li>Benefit - 3</li>
+      </ul>
+
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat cum
+        hic impedit mollitia dignissimos placeat! Minima totam minus est quia
+        harum, molestiae sit! Laborum nobis magni sequi doloribus explicabo nam
+        iusto tempore, perspiciatis aperiam corrupti rerum voluptas, cupiditate
+        maiores soluta!
+      </p>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-container" id="modal">
+      <div class="modal">
+        <button class="close-btn" id="close">
+          <i class="fa fa-times"></i>
+        </button>
+
+        <div class="modal-header">
+          <h3>Sign Up</h3>
+        </div>
+
+        <div class="modal-content">
+          <p>Register with us to get offers, support and more</p>
+          <form action="" class="modal-form">
+            <div>
+              <label for="name">Name</label>
+              <input type="text" id="name" placeholder="Enter name" />
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder="Enter email" />
+            </div>
+            <div>
+              <label for="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                placeholder="Enter password"
+              />
+            </div>
+            <div>
+              <label for="password2">Confirm Password</label>
+              <input
+                type="password"
+                id="password2"
+                placeholder="Enter password2"
+              />
+            </div>
+            <input type="submit" value="Submit" class="submit-btn" />
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
