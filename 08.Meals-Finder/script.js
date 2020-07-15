@@ -58,7 +58,7 @@ async function searchMeal(event) {
   }
 
   // Display result heading
-  dom.resultHeading.innerHTML = `<h2>Search results for '${term}':</h2>`;
+  dom.resultHeading.innerHTML = `<h2 class="margin-bottom-md">Search results for '${term}':</h2>`;
 
   // Insert data to the DOM
   dom.mealsEl.innerHTML = meals
