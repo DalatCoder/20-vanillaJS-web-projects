@@ -6,6 +6,8 @@ const dom = (function () {
   const form = document.getElementById('form');
   const text = document.getElementById('text');
   const amount = document.getElementById('amount');
+  const error_text = document.getElementById('error-text');
+  const error_amount = document.getElementById('error-amount');
 
   return {
     balance,
@@ -15,6 +17,8 @@ const dom = (function () {
     form,
     text,
     amount,
+    error_text,
+    error_amount,
   };
 })();
 
@@ -138,3 +142,43 @@ Init();
 
 // Event listeners
 dom.form.addEventListener('submit', addTransaction);
+
+dom.text.addEventListener('input', onTextInput);
+dom.amount.addEventListener('change', onAmountChange);
+
+// Handle events
+function onTextInput(event) {
+  const innerText = event.target.value.trim();
+  const { error_text } = dom;
+
+  if (innerText.length === 0) {
+    error_text.innerText = 'Please add some description!';
+    error_text.classList.add('show');
+    return;
+  }
+
+  if (innerText.length > 30) {
+    error_text.innerText = 'Description is too long!';
+    error_text.classList.add('show');
+    return;
+  }
+
+  if (error_text.classList.contains('show')) {
+    error_text.classList.remove('show');
+  }
+}
+
+function onAmountChange(event) {
+  const amount = parseInt(event.target.value);
+  const { error_amount } = dom;
+
+  if (amount === 0) {
+    error_amount.innerText = 'Invalid amount!';
+    error_amount.classList.add('show');
+    return;
+  }
+
+  if (error_amount.classList.contains('show')) {
+    error_amount.classList.remove('show');
+  }
+}

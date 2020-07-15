@@ -93,6 +93,16 @@ input[type='number']:focus {
   outline: 1px solid #bbb;
 }
 
+.error {
+  color: #c0392b;
+  margin: 5px 0;
+  display: none;
+}
+
+.error.show {
+  display: block;
+}
+
 .btn {
   background-color: #9c88ff;
   margin: 20px 0 30px;
