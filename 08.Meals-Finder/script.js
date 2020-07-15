@@ -5,6 +5,7 @@ const dom = (function () {
   const resultHeading = document.getElementById('result-heading');
   const mealsEl = document.getElementById('meals');
   const single_mealEl = document.getElementById('single-meal');
+  const spinLoading = document.getElementById('spin-container');
 
   return {
     search,
@@ -13,6 +14,7 @@ const dom = (function () {
     resultHeading,
     mealsEl,
     single_mealEl,
+    spinLoading,
   };
 })();
 
@@ -30,6 +32,7 @@ function catchAsyncException(func) {
 // Search meal and fetch from API
 async function searchMeal(event) {
   event.preventDefault();
+  showSpinLoading();
 
   // Clear single meal
   dom.single_mealEl.innerHTML = '';
@@ -48,6 +51,7 @@ async function searchMeal(event) {
   const raw = await fetch(url);
   const data = await raw.json();
 
+  hideSpinLoading();
   const { meals } = data;
 
   if (!meals) {
@@ -80,6 +84,8 @@ async function searchMeal(event) {
 
 // Get meal detail by its ID
 async function getMealById(mealId) {
+  showSpinLoading();
+
   const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`;
 
   const raw = await fetch(url);
@@ -91,6 +97,7 @@ async function getMealById(mealId) {
     return;
   }
 
+  hideSpinLoading();
   addMealToDOM(meal);
 }
 
@@ -99,6 +106,9 @@ async function getRandomMeal() {
   // Clear meals and heading
   dom.mealsEl.innerHTML = '';
   dom.resultHeading.innerHTML = '';
+
+  // Show spin loading
+  showSpinLoading();
 
   const url = 'https://www.themealdb.com/api/json/v1/1/random.php';
   const raw = await fetch(url);
@@ -109,6 +119,9 @@ async function getRandomMeal() {
   if (!meal) {
     alert('Meal not found!');
   }
+
+  // Hide spin loading
+  hideSpinLoading();
 
   addMealToDOM(meal);
 }
@@ -144,6 +157,17 @@ function addMealToDOM(meal) {
       </div>
     </div>
   `;
+}
+
+// Show spin loading
+function showSpinLoading() {
+  dom.spinLoading.classList.remove('hide');
+  dom.spinLoading.classList.add('show');
+}
+
+function hideSpinLoading() {
+  dom.spinLoading.classList.remove('show');
+  dom.spinLoading.classList.add('hide');
 }
 
 // Event listeners
