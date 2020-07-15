@@ -78,5 +78,71 @@ async function searchMeal(event) {
   dom.search.value = '';
 }
 
+// Get meal detail by its ID
+async function getMealById(mealId) {
+  const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`;
+
+  const raw = await fetch(url);
+  const data = await raw.json();
+
+  const [meal] = data.meals;
+  if (!meal) {
+    alert('Meal not found!');
+    return;
+  }
+
+  addMealToDOM(meal);
+}
+
+// Add meal to DOM
+function addMealToDOM(meal) {
+  const ingredients = [];
+
+  for (let i = 1; i <= 20; i++) {
+    if (!meal[`strIngredient${i}`]) {
+      break;
+    }
+
+    ingredients.push(
+      `${meal[`strIngredient${i}`]} - ${meal[`strMeasure${i}`]}`
+    );
+  }
+
+  dom.single_mealEl.innerHTML = `
+    <div class="single-meal">
+      <h1>${meal.strMeal}</h1>
+      <img src="${meal.strMealThumb}" alt="${meal.strMeal} photo"/>
+      <div class="single-meal-info">
+        ${meal.strCategory ? `<p>Category: ${meal.strCategory}</p>` : ''}
+        ${meal.strArea ? `<p>Area: ${meal.strArea}</p>` : ''}
+      </div>
+      <div class="main">
+        <p>${meal.strInstructions}</p>
+        <h2>Ingredients</h2>
+        <ul>
+          ${ingredients.map((ing) => `<li>${ing}</li>`).join('')}
+        </ul>
+      </div>
+    </div>
+  `;
+}
+
 // Event listeners
 dom.submit.addEventListener('submit', catchAsyncException(searchMeal));
+dom.mealsEl.addEventListener('click', (event) => {
+  const mealInfoEl = event.path.find((el) => {
+    if (!el.classList) {
+      return false;
+    }
+
+    return el.classList.contains('meal-info');
+  });
+
+  if (!mealInfoEl) {
+    return;
+  }
+
+  const mealID = mealInfoEl.dataset.mealid;
+  console.log(mealID);
+  catchAsyncException(getMealById(mealID));
+});
