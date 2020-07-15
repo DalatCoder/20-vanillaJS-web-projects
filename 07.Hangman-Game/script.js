@@ -62,7 +62,25 @@ function showNotification() {
 
 // Update the wrong letters
 function updateWrongLetters() {
-  console.log('Update wrong');
+  dom.wrongLettersEl.innerHTML = `
+    ${wrongLetters.length > 0 ? '<p>Wrong</p>' : ''}
+    ${wrongLetters.map((letter) => `<span>${letter}</span>`).join(', ')}
+  `;
+
+  dom.figureParts.forEach((part, index) => {
+    const errors = wrongLetters.length;
+
+    if (index < errors) {
+      part.style.display = 'block';
+    } else {
+      part.style.display = 'none';
+    }
+  });
+
+  if (wrongLetters.length === dom.figureParts.length) {
+    dom.finalMessage.innerText = 'You lost!';
+    dom.popup.style.display = 'flex';
+  }
 }
 
 displayWord();
@@ -94,6 +112,21 @@ window.addEventListener('keypress', (event) => {
       showNotification();
     }
   }
+});
+
+// Restart game
+dom.playAgainBtn.addEventListener('click', () => {
+  // Empty arrays
+  correctLetters.splice(0);
+  wrongLetters.splice(0);
+
+  selectedWord = words[Math.floor(Math.random() * words.length)];
+
+  displayWord();
+
+  updateWrongLetters();
+
+  dom.popup.style.display = 'none';
 });
 
 // Close popup window
