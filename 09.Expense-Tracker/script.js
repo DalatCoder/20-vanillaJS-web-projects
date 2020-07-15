@@ -27,6 +27,48 @@ const examples = [
 
 let transactions = examples;
 
+// Add transaction to collection
+function addTransaction(event) {
+  event.preventDefault();
+
+  const text = dom.text.value;
+  const amount = dom.amount.value;
+
+  if (!text || !amount) {
+    alert('Please add a text and amount!');
+    return;
+  }
+
+  if (parseInt(amount) === 0) {
+    alert('Please enter valid amount number!');
+    dom.amount.value = '';
+    return;
+  }
+
+  const transaction = {
+    id: generateID(),
+    text,
+    amount: amount * 1,
+  };
+
+  transactions.push(transaction);
+
+  // Clear inputs
+  dom.text.value = '';
+  dom.amount.value = '';
+
+  // Add to DOM
+  addTransactionDOM(transaction);
+
+  // Update
+  updateValues();
+}
+
+// Generate random ID
+function generateID() {
+  return Date.now();
+}
+
 // Add transactions to DOM list
 function addTransactionDOM(transaction) {
   const { amount, text } = transaction;
@@ -37,7 +79,9 @@ function addTransactionDOM(transaction) {
   item.classList.add(sign === '+' ? 'plus' : 'minus');
   item.innerHTML = `
     ${text} <span>${sign}${Math.abs(amount)}</span>
-    <button class="delete-btn">x</button>
+    <button class="delete-btn" onclick="removeTransaction(${
+      transaction.id
+    })">x</button>
   `;
 
   dom.list.appendChild(item);
@@ -59,15 +103,26 @@ function updateValues() {
   dom.money_minus.innerText = '-$' + formatMoney(Math.abs(totalExpense));
 }
 
+// Remove transaction by ID
+function removeTransaction(id) {
+  transactions = transactions.filter((e) => e.id !== id);
+
+  Init();
+}
+
 // Format number as money
 function formatMoney(money) {
   return money.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); // 12,345.67
 }
 
 // Init app
-(function Init() {
+function Init() {
   dom.list.innerHTML = '';
 
   transactions.forEach(addTransactionDOM);
   updateValues();
-})();
+}
+Init();
+
+// Event listeners
+dom.form.addEventListener('submit', addTransaction);
