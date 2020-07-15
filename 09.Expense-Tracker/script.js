@@ -41,9 +41,27 @@ function addTransactionDOM(transaction) {
   `;
 
   dom.list.appendChild(item);
-  // < !-- < li class="minus" >
-  //   Cash < span > -$400</ > <button class="delete-btn">x</button>
-  //     </li > -->
+}
+
+// Update the balance, income and expense
+function updateValues() {
+  const amounts = transactions.map((e) => parseFloat(e.amount));
+  const balance = amounts.reduce((total, cur) => (total += cur), 0);
+  const totalIncome = amounts
+    .filter((num) => num > 0)
+    .reduce((total, cur) => (total += cur), 0);
+  const totalExpense = amounts
+    .filter((num) => num < 0)
+    .reduce((total, cur) => (total += cur), 0);
+
+  dom.balance.innerText = '$' + formatMoney(balance);
+  dom.money_plus.innerText = '+$' + formatMoney(totalIncome);
+  dom.money_minus.innerText = '-$' + formatMoney(Math.abs(totalExpense));
+}
+
+// Format number as money
+function formatMoney(money) {
+  return money.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); // 12,345.67
 }
 
 // Init app
@@ -51,4 +69,5 @@ function addTransactionDOM(transaction) {
   dom.list.innerHTML = '';
 
   transactions.forEach(addTransactionDOM);
+  updateValues();
 })();
