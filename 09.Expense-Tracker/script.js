@@ -8,6 +8,7 @@ const dom = (function () {
   const amount = document.getElementById('amount');
   const error_text = document.getElementById('error-text');
   const error_amount = document.getElementById('error-amount');
+  const errorContainer = document.getElementById('error-container');
 
   return {
     balance,
@@ -19,6 +20,7 @@ const dom = (function () {
     amount,
     error_text,
     error_amount,
+    errorContainer,
   };
 })();
 
@@ -36,27 +38,11 @@ const localStorageTransactions = JSON.parse(
 let transactions = localStorageTransactions || [];
 
 // Add transaction to collection
-function addTransaction(event) {
-  event.preventDefault();
-
-  const text = dom.text.value;
-  const amount = dom.amount.value;
-
-  if (!text || !amount) {
-    alert('Please add a text and amount!');
-    return;
-  }
-
-  if (parseInt(amount) === 0) {
-    alert('Please enter valid amount number!');
-    dom.amount.value = '';
-    return;
-  }
-
+function addTransaction(text, amount) {
   const transaction = {
     id: generateID(),
     text,
-    amount: amount * 1,
+    amount,
   };
 
   transactions.push(transaction);
@@ -141,44 +127,88 @@ function Init() {
 Init();
 
 // Event listeners
-dom.form.addEventListener('submit', addTransaction);
+dom.form.addEventListener('submit', onFormSubmit);
 
 dom.text.addEventListener('input', onTextInput);
 dom.amount.addEventListener('change', onAmountChange);
+dom.amount.addEventListener('input', onAmountChange);
 
 // Handle events
-function onTextInput(event) {
-  const innerText = event.target.value.trim();
-  const { error_text } = dom;
+function onFormSubmit(event) {
+  event.preventDefault();
+  const innerText = dom.text.value;
+  const amountValue = dom.amount.value;
 
-  if (innerText.length === 0) {
-    error_text.innerText = 'Please add some description!';
-    error_text.classList.add('show');
+  const textErrorMsg = analysisTextInput(innerText);
+  const amountErrorMsg = analysisAmountInput(amountValue);
+
+  if (!textErrorMsg && !amountErrorMsg) {
+    addTransaction(innerText, amountValue);
     return;
   }
 
-  if (innerText.length > 30) {
-    error_text.innerText = 'Description is too long!';
-    error_text.classList.add('show');
-    return;
+  if (textErrorMsg) {
+    dom.error_text.innerText = textErrorMsg;
+    dom.error_text.classList.add('show');
   }
 
-  if (error_text.classList.contains('show')) {
-    error_text.classList.remove('show');
+  if (amountErrorMsg) {
+    dom.error_amount.innerText = amountErrorMsg;
+    dom.error_amount.classList.add('show');
   }
 }
 
-function onAmountChange(event) {
-  const amount = parseInt(event.target.value);
-  const { error_amount } = dom;
+function onTextInput(event) {
+  const value = event.target.value;
 
-  if (amount === 0) {
-    error_amount.innerText = 'Invalid amount!';
-    error_amount.classList.add('show');
+  const errorMessage = analysisTextInput(value);
+  if (!errorMessage) {
+    if (dom.error_text.classList.contains('show')) {
+      dom.error_text.classList.remove('show');
+    }
     return;
   }
 
-  if (error_amount.classList.contains('show')) {
-    error_amount.classList.remove('show');
+  dom.error_text.innerText = errorMessage;
+  dom.error_text.classList.add('show');
+}
+
+function onAmountChange(event) {
+  const value = event.target.value;
+
+  const errorMessage = analysisAmountInput(value);
+  if (!errorMessage) {
+    if (dom.error_amount.classList.contains('show')) {
+      dom.error_amount.classList.remove('show');
+    }
+    return;
   }
+
+  dom.error_amount.innerText = errorMessage;
+  dom.error_amount.classList.add('show');
+}
+
+// Bussiness logic
+function analysisTextInput(innerText) {
+  const text = innerText.trim();
+
+  if (text.length == 0) {
+    return 'Please enter valid description!';
+  }
+
+  if (text.length > 30) {
+    return 'Description is too long!';
+  }
+
+  return '';
+}
+
+function analysisAmountInput(amountInput) {
+  const amount = parseInt(amountInput);
+
+  if (amount === 0 || Number.isNaN(amount)) {
+    return 'Invalid amount!';
+  }
+
+  return '';
 }
