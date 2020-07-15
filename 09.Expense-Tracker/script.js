@@ -18,14 +18,18 @@ const dom = (function () {
   };
 })();
 
-const examples = [
-  { id: 1, text: 'flowers', amount: '-50' },
-  { id: 2, text: 'salary', amount: '300' },
-  { id: 3, text: 'book', amount: '-50' },
-  { id: 4, text: 'camera', amount: '-50' },
-];
+// const examples = [
+//   { id: 1, text: 'flowers', amount: '-50' },
+//   { id: 2, text: 'salary', amount: '300' },
+//   { id: 3, text: 'book', amount: '-50' },
+//   { id: 4, text: 'camera', amount: '-50' },
+// ];
 
-let transactions = examples;
+const localStorageTransactions = JSON.parse(
+  localStorage.getItem('transactions')
+);
+
+let transactions = localStorageTransactions || [];
 
 // Add transaction to collection
 function addTransaction(event) {
@@ -62,6 +66,7 @@ function addTransaction(event) {
 
   // Update
   updateValues();
+  updateLocalStorage();
 }
 
 // Generate random ID
@@ -107,12 +112,19 @@ function updateValues() {
 function removeTransaction(id) {
   transactions = transactions.filter((e) => e.id !== id);
 
+  updateLocalStorage();
+
   Init();
 }
 
 // Format number as money
 function formatMoney(money) {
   return money.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); // 12,345.67
+}
+
+// Update local storage transactions
+function updateLocalStorage() {
+  localStorage.setItem('transactions', JSON.stringify(transactions));
 }
 
 // Init app
