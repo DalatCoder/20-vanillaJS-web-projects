@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 
 *,
 *::before,
@@ -12,7 +12,7 @@
 
 body {
   box-sizing: border-box;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   background-color: #f7f7f7;
   display: flex;
   flex-direction: column;
@@ -23,7 +23,7 @@ body {
 
 .container {
   margin: 30px auto;
-  width: 350px;
+  width: 450px;
 }
 
 h1 {

@@ -93,9 +93,9 @@ function updateValues() {
     .filter((num) => num < 0)
     .reduce((total, cur) => (total += cur), 0);
 
-  dom.balance.innerText = '$' + formatMoney(balance);
-  dom.money_plus.innerText = '+$' + formatMoney(totalIncome);
-  dom.money_minus.innerText = '-$' + formatMoney(Math.abs(totalExpense));
+  dom.balance.innerText = 'đ' + formatMoney(balance) + ' x 1000';
+  dom.money_plus.innerText = '+đ' + formatMoney(totalIncome);
+  dom.money_minus.innerText = '-đ' + formatMoney(Math.abs(totalExpense));
 }
 
 // Remove transaction by ID
@@ -193,11 +193,11 @@ function analysisTextInput(innerText) {
   const text = innerText.trim();
 
   if (text.length == 0) {
-    return 'Please enter valid description!';
+    return 'Mô tả không được để trống!';
   }
 
   if (text.length > 30) {
-    return 'Description is too long!';
+    return 'Mô tả quá dài!';
   }
 
   return '';
@@ -207,7 +207,7 @@ function analysisAmountInput(amountInput) {
   const amount = parseInt(amountInput);
 
   if (amount === 0 || Number.isNaN(amount)) {
-    return 'Invalid amount!';
+    return 'Số lượng tiền không hợp lệ!';
   }
 
   return '';
