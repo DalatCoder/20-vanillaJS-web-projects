@@ -200,8 +200,7 @@ async function fetchSong(songTitle) {
   const songs = response.data;
 
   if (!songs) {
-    alert('Khong tim thay bai hat!');
-    return;
+    throw new Error('Không tìm thấy bài hát!');
   }
 
   const firstSong = songs[0];
@@ -247,8 +246,7 @@ async function onSearchRequest(event) {
   const song = await fetchSong(songTitle);
 
   if (!song) {
-    alert('Khong tim thay bai hat!');
-    return;
+    throw new Error('Không tìm thấy bài hát!');
   }
 
   if (!songs.find((el) => el.id === song.id)) {

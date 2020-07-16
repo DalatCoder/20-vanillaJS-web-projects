@@ -1,7 +1,7 @@
 function catchAsyncException(func) {
   return (...args) => {
     func.apply(null, args).catch((err) => {
-      alert('Something went wrong! 😢');
+      alert(err.message);
       if (
         document
           .getElementById('spin-load-container')
