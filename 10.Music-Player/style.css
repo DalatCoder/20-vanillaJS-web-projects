@@ -64,7 +64,7 @@ h1 {
   position: absolute;
   bottom: 0;
   left: 0;
-  animation: rotate 3s linear infinite;
+  animation: rotate 11s linear infinite;
 
   animation-play-state: paused;
 }
