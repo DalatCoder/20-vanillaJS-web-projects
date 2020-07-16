@@ -24,21 +24,40 @@ const dom = (function () {
   };
 })();
 
-// Song titles
-const songs = ['hey', 'summer', 'ukulele'];
+const form = document.getElementById('form');
+const search = document.getElementById('search');
+const listSong = document.getElementById('list');
+
+const songs = loadSongsFromStorage() || [];
 
 // Keep track of song
-let songIndex = 1;
+let songIndex;
 
-// Initially load song detail into DOM
-loadSong(songs[songIndex]);
+/*
+if (songs.length > 0) {
+  // let songIndex = Math.floor(Math.random() * songs.length);
+  // Initially load song detail into DOM
+  // loadSong(songs[songIndex]);
+}
+*/
 
 // Update song details
 function loadSong(song) {
   dom.title.innerText = song;
-  dom.audio.setAttribute('src', `music/${song}.mp3`);
-  dom.cover.setAttribute('src', `images/${song}.jpg`);
+  dom.audio.src = getSongAudioURL(song.id);
+  dom.cover.src = song.cover;
 }
+
+let songOrder = 1;
+// Init song order
+
+// Init
+(function Init() {
+  for (const song of songs) {
+    song.order = songOrder++;
+    listSong.appendChild(createSongItemDOM(song));
+  }
+})();
 
 // Play song
 function playSong() {
@@ -129,3 +148,111 @@ dom.audio.addEventListener('ended', pauseSong);
 
 // Click on progress bar
 dom.progressContainer.addEventListener('click', setProgressBar);
+
+/////////////////////////////////////////////////////////////////
+//                        AJAX
+/////////////////////////////////////////////////////////////////
+
+const proxyCORS = 'https://cors-anywhere.herokuapp.com/';
+
+const querySongURL =
+  'http://ac.mp3.zing.vn/complete?type=artist,song,key,code&num=500&query=';
+
+const apiSongURL = 'http://api.mp3.zing.vn/api/streaming/audio/%id%/320';
+
+function getSongAudioURL(id) {
+  return `http://api.mp3.zing.vn/api/streaming/audio/${id}/320`;
+}
+
+function getCoverURL(coverURL) {
+  return 'https://photo-resize-zmp3.zadn.vn/w480_r1x1_jpeg/' + coverURL;
+}
+
+function formatDuration(time) {
+  const mins = Math.floor(time / 60);
+  const secs = time % 60;
+
+  let formatted = '';
+
+  if (mins < 10) {
+    formatted += '0';
+  }
+  formatted += mins.toString();
+
+  formatted += ':';
+
+  if (secs < 10) {
+    formatted += '0';
+  }
+  formatted += secs.toString();
+
+  return formatted;
+}
+
+async function fetchSong(songTitle) {
+  console.log(proxyCORS + querySongURL + encodeURI(songTitle));
+  const raw = await fetch(proxyCORS + querySongURL + songTitle);
+  const response = await raw.json();
+
+  const songs = response.data[0].song;
+  const firstSong = songs[0];
+
+  return {
+    artist: firstSong.artist,
+    duration: firstSong.duration,
+    id: firstSong.id,
+    title: firstSong.name,
+    cover: firstSong.thumb,
+    order: songOrder++,
+  };
+}
+
+function createSongItemDOM(song) {
+  const item = document.createElement('li');
+  item.classList.add('song');
+  item.addEventListener('click', onSongClick);
+
+  item.innerHTML = songTemplate
+    .replace(/%song-order%/g, song.order)
+    .replace(/%song-photo%/g, getCoverURL(song.cover))
+    .replace(/%song-title%/g, song.title)
+    .replace(/%song-artist%/g, song.artist)
+    .replace(/%song-duration%/g, formatDuration(song.duration))
+    .replace(/%song-id%/g, song.id);
+
+  return item;
+}
+
+async function onSearchRequest(event) {
+  event.preventDefault();
+
+  const songTitle = search.value;
+
+  const song = await fetchSong(songTitle);
+  songs.push(song);
+
+  dom.audio.src = getSongAudioURL(song.id);
+  dom.title.innerText = song.title;
+  dom.cover.src = getCoverURL(song.cover);
+  playSong();
+
+  const item = createSongItemDOM(song);
+  listSong.appendChild(item);
+
+  search.value = '';
+
+  // Save to localstorage
+  saveSongsToLocalStorage(songs);
+}
+
+form.addEventListener('submit', catchAsyncException(onSearchRequest));
+
+function onSongClick(event) {
+  const { songid, songphoto, songtitle } = event.target.dataset;
+
+  dom.audio.src = getSongAudioURL(songid);
+  dom.cover.src = songphoto;
+  dom.title.innerText = songtitle;
+
+  playSong();
+}
