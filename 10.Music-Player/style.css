@@ -15,19 +15,80 @@ body {
     rgba(247, 247, 247, 1) 23.8%,
     rgba(252, 221, 221, 1) 92%
   );
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-family: 'Lato', sans-serif;
 }
 
-h1 {
-  margin: 0 0 70px;
+.container {
+  width: 1000px;
+  max-width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.search-container {
+  flex-basis: 100%;
+  background-color: transparent;
+  height: 200px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-container .form {
+  position: relative;
+  width: 60%;
+}
+
+.search-container input {
+  background-color: #fff;
+  color: #fe8daa;
+  font-size: 20px;
+  padding: 20px;
+  width: 100%;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 20px 20px 0 rgba(252, 169, 169, 0.6);
+}
+
+.search-container input::placeholder {
+  color: #fe8da99f;
+}
+
+.search-container input:focus,
+.search-container button:focus {
+  outline: none;
+}
+
+.search-container button {
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.search-container .form button i {
+  border: none;
+  background-color: transparent;
+  font-size: 20px;
+  color: #fe8daa;
+}
+
+.list-container {
+  flex-basis: 400px;
+  height: 200px;
+  background-color: cornflowerblue;
 }
 
 .music-container {
+  flex-basis: 400px;
+  height: 100px;
   background-color: #fff;
   border: none;
   border-radius: 15px;
