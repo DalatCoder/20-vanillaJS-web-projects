@@ -238,9 +238,18 @@ async function onSearchRequest(event) {
   event.preventDefault();
 
   const { value } = search;
-  const songTitle = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const songTitle = value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D');
 
   const song = await fetchSong(songTitle);
+
+  if (!song) {
+    alert('Khong tim thay bai hat!');
+    return;
+  }
 
   if (!songs.find((el) => el.id === song.id)) {
     songs.push(song);
