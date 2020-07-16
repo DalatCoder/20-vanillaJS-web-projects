@@ -49,6 +49,19 @@ function playSong() {
   dom.audio.play();
 }
 
+// Toggle play and pause
+function toggleStatus() {
+  const isPlaying = dom.musicContainer.classList.contains('play');
+
+  if (isPlaying) {
+    // If song is playing => PAUSE
+    pauseSong();
+  } else {
+    // If song is pausing => PLAY
+    playSong();
+  }
+}
+
 // Pause song
 function pauseSong() {
   dom.musicContainer.classList.remove('play');
@@ -102,17 +115,7 @@ function setProgressBar(event) {
 }
 
 // Event listeners
-dom.playBtn.addEventListener('click', () => {
-  const isPlaying = dom.musicContainer.classList.contains('play');
-
-  if (isPlaying) {
-    // If song is playing => PAUSE
-    pauseSong();
-  } else {
-    // If song is pausing => PLAY
-    playSong();
-  }
-});
+dom.playBtn.addEventListener('click', toggleStatus);
 
 // Change song
 dom.prevBtn.addEventListener('click', prevSong);
