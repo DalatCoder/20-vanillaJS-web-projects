@@ -237,7 +237,8 @@ async function onSearchRequest(event) {
 
   event.preventDefault();
 
-  const songTitle = search.value;
+  const { value } = search;
+  const songTitle = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
   const song = await fetchSong(songTitle);
 
