@@ -109,6 +109,9 @@ input[type='number']:focus {
 
 .error.show {
   display: block;
+  animation-name: fadeIn;
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
 }
 
 .btn {
@@ -183,4 +186,14 @@ input[type='number']:focus {
 
 .list li:hover .delete-btn {
   opacity: 1;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
