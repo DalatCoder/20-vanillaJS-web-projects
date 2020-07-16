@@ -7,3 +7,11 @@ function catchAsyncException(func) {
     });
   };
 }
+
+function showSpinLoading() {
+  document.getElementById('spin-load-container').classList.add('show');
+}
+
+function hideSpinLoading() {
+  document.getElementById('spin-load-container').classList.remove('show');
+}

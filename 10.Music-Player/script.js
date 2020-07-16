@@ -224,12 +224,19 @@ function createSongItemDOM(song) {
 }
 
 async function onSearchRequest(event) {
+  showSpinLoading();
+
   event.preventDefault();
 
   const songTitle = search.value;
 
   const song = await fetchSong(songTitle);
-  songs.push(song);
+
+  if (!songs.find((el) => el.id === song.id)) {
+    songs.push(song);
+  }
+
+  hideSpinLoading();
 
   dom.audio.src = getSongAudioURL(song.id);
   dom.title.innerText = song.title;
