@@ -153,10 +153,12 @@ dom.progressContainer.addEventListener('click', setProgressBar);
 //                        AJAX
 /////////////////////////////////////////////////////////////////
 
-const proxyCORS = 'https://cors-anywhere.herokuapp.com/';
+// const proxyCORS = 'https://cors-anywhere.herokuapp.com/';
 
-const querySongURL =
-  'http://ac.mp3.zing.vn/complete?type=artist,song,key,code&num=500&query=';
+// const querySongURL =
+//   'http://ac.mp3.zing.vn/complete?type=artist,song,key,code&num=500&query=';
+
+const querySongURL = 'https://myownserver.glitch.me/';
 
 const apiSongURL = 'http://api.mp3.zing.vn/api/streaming/audio/%id%/320';
 
@@ -190,11 +192,18 @@ function formatDuration(time) {
 }
 
 async function fetchSong(songTitle) {
-  console.log(proxyCORS + querySongURL + encodeURI(songTitle));
-  const raw = await fetch(proxyCORS + querySongURL + songTitle);
+  // console.log(proxyCORS + querySongURL + encodeURI(songTitle));
+  console.log(querySongURL + songTitle);
+  const raw = await fetch(querySongURL + songTitle);
   const response = await raw.json();
 
-  const songs = response.data[0].song;
+  const songs = response.data;
+
+  if (!songs) {
+    alert('Khong tim thay bai hat!');
+    return;
+  }
+
   const firstSong = songs[0];
 
   return {
