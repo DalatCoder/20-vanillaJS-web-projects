@@ -55,6 +55,14 @@ function loadDefaultSong() {
 
 // Init
 (function Init() {
+  // https://stackoverflow.com/questions/8469145/how-to-detect-html5-audio-mp3-support
+  var a = document.createElement('audio');
+  if (!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, ''))) {
+    document.body.innerHTML = 'Trình duyệt không hỗ trợ phát âm thanh!';
+    showError('Trình duyệt không hỗ trợ phát âm thanh!');
+    return;
+  }
+
   songIndex = Math.floor(Math.random() * songs.length) || 0;
 
   for (const song of songs) {
