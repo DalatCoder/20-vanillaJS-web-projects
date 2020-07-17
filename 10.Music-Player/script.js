@@ -11,6 +11,10 @@ const dom = (function () {
   const title = document.getElementById('title');
   const cover = document.getElementById('cover');
 
+  const form = document.getElementById('form');
+  const search = document.getElementById('search');
+  const listSong = document.getElementById('list');
+
   return {
     musicContainer,
     prevBtn,
@@ -21,12 +25,11 @@ const dom = (function () {
     progressContainer,
     title,
     cover,
+    form,
+    search,
+    listSong,
   };
 })();
-
-const form = document.getElementById('form');
-const search = document.getElementById('search');
-const listSong = document.getElementById('list');
 
 const songs = loadSongsFromStorage() || [];
 
@@ -43,9 +46,9 @@ if (songs.length > 0) {
 
 // Update song details
 function loadSong(song) {
-  dom.title.innerText = song;
   dom.audio.src = getSongAudioURL(song.id);
-  dom.cover.src = song.cover;
+  dom.title.innerText = song.title;
+  dom.cover.src = getCoverURL(song.cover);
 }
 
 let songOrder = 1;
@@ -55,7 +58,7 @@ let songOrder = 1;
 (function Init() {
   for (const song of songs) {
     song.order = songOrder++;
-    listSong.appendChild(createSongItemDOM(song));
+    dom.listSong.appendChild(createSongItemDOM(song));
   }
 })();
 
@@ -158,7 +161,7 @@ async function fetchSong(songTitle) {
 
   const songs = response.data;
 
-  if (!songs) {
+  if (!songs || songs.length === 0) {
     throw new Error('Không tìm thấy bài hát!');
   }
 
@@ -195,12 +198,7 @@ async function onSearchRequest(event) {
 
   event.preventDefault();
 
-  const { value } = search;
-  const songTitle = value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/đ/g, 'd')
-    .replace(/Đ/g, 'D');
+  const songTitle = normalizeVietnameseString(dom.search.value);
 
   const song = await fetchSong(songTitle);
 
@@ -208,34 +206,44 @@ async function onSearchRequest(event) {
     throw new Error('Không tìm thấy bài hát!');
   }
 
-  if (!songs.find((el) => el.id === song.id)) {
+  // Check if song is already in localstorage
+  const alreadySong = songs.find((s) => s.id === song.id);
+
+  if (!alreadySong) {
     songs.push(song);
+
+    const item = createSongItemDOM(song);
+    dom.listSong.appendChild(item);
+
+    // Save to localstorage
+    saveSongsToLocalStorage(songs);
   }
 
   hideSpinLoading();
 
-  dom.audio.src = getSongAudioURL(song.id);
-  dom.title.innerText = song.title;
-  dom.cover.src = getCoverURL(song.cover);
+  loadSong(song);
   playSong();
 
-  const item = createSongItemDOM(song);
-  listSong.appendChild(item);
+  // Clear search term
+  dom.search.value = '';
 
-  search.value = '';
-
-  // Save to localstorage
-  saveSongsToLocalStorage(songs);
+  // Notification
+  if (alreadySong) {
+    throw new Error('Bài hát đã có sẵn!');
+  }
 }
 
-form.addEventListener('submit', catchAsyncException(onSearchRequest));
+dom.form.addEventListener('submit', catchAsyncException(onSearchRequest));
 
 function onSongClick(event) {
-  const { songid, songphoto, songtitle } = event.target.dataset;
+  if (event.target.tagName !== 'A') {
+    return;
+  }
 
-  dom.audio.src = getSongAudioURL(songid);
-  dom.cover.src = songphoto;
-  dom.title.innerText = songtitle;
+  const { songid } = event.target.dataset;
 
+  const song = songs.find((song) => song.id === songid);
+
+  loadSong(song);
   playSong();
 }
