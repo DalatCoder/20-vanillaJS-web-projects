@@ -33,16 +33,11 @@ const dom = (function () {
 
 const songs = loadSongsFromStorage() || [];
 
-// Keep track of song
+// Keep track of song is playing
 let songIndex;
 
-/*
-if (songs.length > 0) {
-  // let songIndex = Math.floor(Math.random() * songs.length);
-  // Initially load song detail into DOM
-  // loadSong(songs[songIndex]);
-}
-*/
+// Display song order in DOM
+let songOrder = 1;
 
 // Update song details
 function loadSong(song) {
@@ -51,11 +46,17 @@ function loadSong(song) {
   dom.cover.src = getCoverURL(song.cover);
 }
 
-let songOrder = 1;
-// Init song order
+// Load default song
+function loadDefaultSong() {
+  dom.audio.src = 'music/ukulele.mp3';
+  dom.cover.src = 'images/ukulele.jpg';
+  dom.title.innerText = 'Ukulele';
+}
 
 // Init
 (function Init() {
+  songIndex = Math.floor(Math.random() * songs.length) || 0;
+
   for (const song of songs) {
     song.order = songOrder++;
     dom.listSong.appendChild(createSongItemDOM(song));
@@ -101,7 +102,14 @@ function prevSong() {
     songIndex = songs.length - 1;
   }
 
-  loadSong(songs[songIndex]);
+  const song = songs[songIndex];
+  if (!song) {
+    loadDefaultSong();
+    playSong();
+    throw new Error('Không có bài hát nào trong danh sách!');
+  }
+
+  loadSong(song);
 
   playSong();
 }
@@ -114,7 +122,14 @@ function nextSong() {
     songIndex = 0;
   }
 
-  loadSong(songs[songIndex]);
+  const song = songs[songIndex];
+  if (!song) {
+    loadDefaultSong();
+    playSong();
+    throw new Error('Không có bài hát nào trong danh sách!');
+  }
+
+  loadSong(song);
 
   playSong();
 }
