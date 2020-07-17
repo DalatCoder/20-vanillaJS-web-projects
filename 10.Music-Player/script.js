@@ -204,7 +204,7 @@ dom.form.addEventListener('submit', catchAsyncException(onSearchRequest));
 
 dom.search.addEventListener(
   'input',
-  catchAsyncException(debounce(onSearchRequest))
+  debounce(catchAsyncException(onSearchRequest))
 );
 
 async function fetchSongs(songTitle) {
@@ -256,7 +256,7 @@ async function onSearchRequest(event) {
   }
 
   const songs = await fetchSongs(songTitle);
-  console.log(songs);
+  // console.log(songs);
 
   hideSpinLoading();
 

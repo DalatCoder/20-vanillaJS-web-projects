@@ -85,7 +85,7 @@ function hideSuggestsWindow() {
   document.querySelector('.search-container').classList.remove('show-suggest');
 }
 
-const debounce = (func, delay = 500) => {
+const debounce = (func, delay = 1000) => {
   let timeoutId;
 
   return (...args) => {
