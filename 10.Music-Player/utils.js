@@ -46,7 +46,10 @@ function getCoverURL(coverURL) {
 }
 
 function getQueryURL(songTitle) {
-  return 'https://myownserver.glitch.me/' + songTitle;
+  // return 'https://myownserver.glitch.me/' + songTitle;
+  const proxy = 'https://cors-anywhere.herokuapp.com/';
+  const url = `http://ac.mp3.zing.vn/complete?type=artist,song,key,code&num=500&query=${songTitle}`;
+  return proxy + url;
 }
 
 function formatDuration(time) {
