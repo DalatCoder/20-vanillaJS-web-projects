@@ -152,49 +152,8 @@ dom.progressContainer.addEventListener('click', setProgressBar);
 /////////////////////////////////////////////////////////////////
 //                        AJAX
 /////////////////////////////////////////////////////////////////
-
-// const proxyCORS = 'https://cors-anywhere.herokuapp.com/';
-
-// const querySongURL =
-//   'http://ac.mp3.zing.vn/complete?type=artist,song,key,code&num=500&query=';
-
-const querySongURL = 'https://myownserver.glitch.me/';
-
-const apiSongURL = 'http://api.mp3.zing.vn/api/streaming/audio/%id%/320';
-
-function getSongAudioURL(id) {
-  return `http://api.mp3.zing.vn/api/streaming/audio/${id}/320`;
-}
-
-function getCoverURL(coverURL) {
-  return 'https://photo-resize-zmp3.zadn.vn/w480_r1x1_jpeg/' + coverURL;
-}
-
-function formatDuration(time) {
-  const mins = Math.floor(time / 60);
-  const secs = time % 60;
-
-  let formatted = '';
-
-  if (mins < 10) {
-    formatted += '0';
-  }
-  formatted += mins.toString();
-
-  formatted += ':';
-
-  if (secs < 10) {
-    formatted += '0';
-  }
-  formatted += secs.toString();
-
-  return formatted;
-}
-
 async function fetchSong(songTitle) {
-  // console.log(proxyCORS + querySongURL + encodeURI(songTitle));
-  console.log(querySongURL + songTitle);
-  const raw = await fetch(querySongURL + songTitle);
+  const raw = await fetch(getQueryURL(songTitle));
   const response = await raw.json();
 
   const songs = response.data;
