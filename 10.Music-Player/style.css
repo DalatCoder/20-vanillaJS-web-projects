@@ -32,8 +32,10 @@ body {
   flex-basis: 100%;
   background-color: transparent;
   height: 200px;
+  position: relative;
 
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -41,16 +43,21 @@ body {
 .search-container .form {
   position: relative;
   width: 60%;
+
+  z-index: 300;
 }
 
 .search-container input {
-  background-color: #fff;
+  background-color: rgb(253, 246, 246);
   color: #fe8daa;
   font-size: 20px;
   padding: 20px;
   width: 100%;
   border: none;
-  border-radius: 15px;
+  border-radius: 30px;
+}
+
+.search-container:not(.show-suggest) input {
   box-shadow: 0 5px 10px 0 rgba(252, 169, 169, 0.6);
 }
 
@@ -65,7 +72,7 @@ body {
 
 .search-container button {
   border: none;
-  background-color: #fff;
+  background-color: rgb(253, 246, 246);
   cursor: pointer;
   position: absolute;
   right: 15px;
@@ -78,6 +85,30 @@ body {
   background-color: transparent;
   font-size: 20px;
   color: #fe8daa;
+}
+
+.search-container .suggest {
+  background-color: rgb(253, 246, 246);
+  width: 60%; /* Equal search input form */
+  padding: 0 4px 10px 15px;
+
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+
+  border-radius: 0 0 30px 30px;
+
+  display: none;
+}
+
+.search-container .suggest .song:first-of-type {
+  padding-top: 30px;
+}
+
+.search-container.show-suggest .suggest {
+  display: block;
 }
 
 .list-container {

@@ -11,6 +11,10 @@ const songTemplate = `
                 <a 
                   href="javascript:;"
                   data-songID=%song-id%
+                  data-songPhoto="%song-photo%"
+                  data-songTitle="%song-title%"
+                  data-songArtist="%song-artist%"
+                  data-songDuration="%song-duration%"
                 >%song-title%</a>
               </div>
               <div class="artist"><span>%song-artist%</span></div>

@@ -10,7 +10,7 @@ function catchAsyncException(func) {
         document.getElementById('spin-load-container').classList.remove('show');
       }
 
-      // console.error(err);
+      console.error(err);
       // Log error
       return;
     });
@@ -76,4 +76,11 @@ function normalizeVietnameseString(string) {
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/đ/g, 'd')
     .replace(/Đ/g, 'D');
+}
+
+function showSuggestsWindow() {
+  document.querySelector('.search-container').classList.add('show-suggest');
+}
+function hideSuggestsWindow() {
+  document.querySelector('.search-container').classList.remove('show-suggest');
 }

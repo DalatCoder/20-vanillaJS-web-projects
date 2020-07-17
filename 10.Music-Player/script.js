@@ -13,6 +13,7 @@ const dom = (function () {
 
   const form = document.getElementById('form');
   const search = document.getElementById('search');
+  const searchContainer = document.querySelector('.search-container');
   const listSong = document.getElementById('list');
 
   return {
@@ -28,10 +29,11 @@ const dom = (function () {
     form,
     search,
     listSong,
+    searchContainer,
   };
 })();
 
-const songs = loadSongsFromStorage() || [];
+let songs;
 
 // Keep track of song is playing
 let songIndex;
@@ -43,7 +45,7 @@ let songOrder = 1;
 function loadSong(song) {
   dom.audio.src = getSongAudioURL(song.id);
   dom.title.innerText = song.title;
-  dom.cover.src = getCoverURL(song.cover);
+  dom.cover.src = song.cover;
 }
 
 // Load default song
@@ -54,7 +56,7 @@ function loadDefaultSong() {
 }
 
 // Init
-(function Init() {
+function Init() {
   // https://stackoverflow.com/questions/8469145/how-to-detect-html5-audio-mp3-support
   var a = document.createElement('audio');
   if (
@@ -66,13 +68,18 @@ function loadDefaultSong() {
     return;
   }
 
-  songIndex = Math.floor(Math.random() * songs.length) || 0;
+  songs = loadSongsFromStorage() || [];
+  songIndex = 0;
+  if (songs.length > 0) {
+    songIndex = songs.length - 1;
+  }
 
   for (const song of songs) {
     song.order = songOrder++;
     dom.listSong.appendChild(createSongItemDOM(song));
   }
-})();
+}
+Init();
 
 // Play song
 function playSong() {
@@ -178,10 +185,19 @@ dom.audio.addEventListener('ended', pauseSong);
 // Click on progress bar
 dom.progressContainer.addEventListener('click', setProgressBar);
 
+// Hide sugguest window
+window.addEventListener('click', (event) => {
+  if (!dom.searchContainer.contains(event.target)) {
+    hideSuggestsWindow();
+  }
+});
+
+dom.search.addEventListener('focus', showSuggestsWindow);
+
 /////////////////////////////////////////////////////////////////
 //                        AJAX
 /////////////////////////////////////////////////////////////////
-async function fetchSong(songTitle) {
+async function fetchSongs(songTitle) {
   const raw = await fetch(getQueryURL(songTitle));
   const response = await raw.json();
 
@@ -191,16 +207,7 @@ async function fetchSong(songTitle) {
     throw new Error('Không tìm thấy bài hát!');
   }
 
-  const firstSong = songs[0];
-
-  return {
-    artist: firstSong.artist,
-    duration: firstSong.duration,
-    id: firstSong.id,
-    title: firstSong.name,
-    cover: firstSong.thumb,
-    order: songOrder++,
-  };
+  return songs;
 }
 
 function createSongItemDOM(song) {
@@ -210,10 +217,10 @@ function createSongItemDOM(song) {
 
   item.innerHTML = songTemplate
     .replace(/%song-order%/g, song.order)
-    .replace(/%song-photo%/g, getCoverURL(song.cover))
+    .replace(/%song-photo%/g, song.cover)
     .replace(/%song-title%/g, song.title)
     .replace(/%song-artist%/g, song.artist)
-    .replace(/%song-duration%/g, formatDuration(song.duration))
+    .replace(/%song-duration%/g, song.duration)
     .replace(/%song-id%/g, song.id);
 
   return item;
@@ -226,37 +233,12 @@ async function onSearchRequest(event) {
 
   const songTitle = normalizeVietnameseString(dom.search.value);
 
-  const song = await fetchSong(songTitle);
-
-  if (!song) {
-    throw new Error('Không tìm thấy bài hát!');
-  }
-
-  // Check if song is already in localstorage
-  const alreadySong = songs.find((s) => s.id === song.id);
-
-  if (!alreadySong) {
-    songs.push(song);
-
-    const item = createSongItemDOM(song);
-    dom.listSong.appendChild(item);
-
-    // Save to localstorage
-    saveSongsToLocalStorage(songs);
-  }
+  const songs = await fetchSongs(songTitle);
+  console.log(songs);
 
   hideSpinLoading();
 
-  loadSong(song);
-  playSong();
-
-  // Clear search term
-  dom.search.value = '';
-
-  // Notification
-  if (alreadySong) {
-    throw new Error('Bài hát đã có sẵn!');
-  }
+  showSuggest(songs);
 }
 
 dom.form.addEventListener('submit', catchAsyncException(onSearchRequest));
@@ -272,4 +254,75 @@ function onSongClick(event) {
 
   loadSong(song);
   playSong();
+}
+
+function showSuggest(songs) {
+  showSuggestsWindow();
+  const list = document.createElement('ul');
+
+  // Get first 5 songs
+  for (let i = 0; i < 5; i++) {
+    const song = songs[i];
+
+    if (!song) {
+      break;
+    }
+
+    const item = document.createElement('li');
+    item.classList.add('song');
+    item.innerHTML = songTemplate
+      .replace(/%song-photo%/g, getCoverURL(song.thumb))
+      .replace(/%song-title%/g, song.name)
+      .replace(/%song-artist%/g, song.artist)
+      .replace(/%song-duration%/g, formatDuration(song.duration))
+      .replace(/%song-id%/g, song.id)
+      .replace(/%song-artist%/g, song.artist)
+      .replace(/%song-duration%/g, song.duration)
+      .replace('<div class="song-order"><span>%song-order%</span></div>', '');
+
+    item.addEventListener('click', onSuggestClick);
+    list.appendChild(item);
+  }
+
+  document.getElementById('suggest').innerHTML = '';
+  document.getElementById('suggest').appendChild(list);
+}
+
+async function onSuggestClick(event) {
+  if (event.target.tagName !== 'A') {
+    return;
+  }
+
+  hideSuggestsWindow();
+  const {
+    songid,
+    songphoto,
+    songtitle,
+    songartist,
+    songduration,
+  } = event.target.dataset;
+
+  const song = {
+    id: songid,
+    cover: songphoto,
+    title: songtitle,
+    artist: songartist,
+    duration: songduration,
+  };
+
+  loadSong(song);
+  playSong();
+
+  const alreadySong = songs.find((s) => s.id === songid);
+  if (!alreadySong) {
+    songs.push(song);
+    saveSongsToLocalStorage(songs);
+
+    // Load UI
+    dom.listSong.innerHTML = '';
+    Init();
+  }
+
+  // Clear search term
+  dom.search.value = '';
 }
