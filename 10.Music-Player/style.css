@@ -375,6 +375,28 @@ body {
   display: flex;
 }
 
+.error-container {
+  background-color: lightcoral;
+  color: #fff;
+  font-size: 20px;
+  border: none;
+  border-radius: 10px 10px 0 0;
+
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  width: 70vw;
+  padding: 20px;
+  text-align: center;
+
+  transition: all 0.7s ease-in-out;
+  transform: translateX(-50%) translateY(100%);
+}
+
+.error-container.show {
+  transform: translateX(-50%) translateY(0);
+}
+
 @keyframes fadeIn {
   0% {
     opacity: 0;

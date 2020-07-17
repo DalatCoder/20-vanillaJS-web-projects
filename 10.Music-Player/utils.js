@@ -1,7 +1,7 @@
 function catchAsyncException(func) {
   return (...args) => {
     func.apply(null, args).catch((err) => {
-      alert(err.message);
+      showError(err.message);
       if (
         document
           .getElementById('spin-load-container')
@@ -10,10 +10,23 @@ function catchAsyncException(func) {
         document.getElementById('spin-load-container').classList.remove('show');
       }
 
-      console.error(err);
+      // console.error(err);
+      // Log error
       return;
     });
   };
+}
+
+function showError(message) {
+  const errorMessage = document.getElementById('error-message');
+  const errorContainer = document.querySelector('.error-container');
+
+  errorMessage.innerText = message;
+  errorContainer.classList.add('show');
+
+  setTimeout(() => {
+    errorContainer.classList.remove('show');
+  }, 3000);
 }
 
 function showSpinLoading() {

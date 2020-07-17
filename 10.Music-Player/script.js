@@ -103,15 +103,15 @@ function prevSong() {
   }
 
   const song = songs[songIndex];
-  if (!song) {
-    loadDefaultSong();
+  if (song) {
+    loadSong(song);
     playSong();
-    throw new Error('Không có bài hát nào trong danh sách!');
+    return;
   }
 
-  loadSong(song);
-
+  loadDefaultSong();
   playSong();
+  showError('Không có bài hát nào trong danh sách!');
 }
 
 // Next song
@@ -123,15 +123,15 @@ function nextSong() {
   }
 
   const song = songs[songIndex];
-  if (!song) {
-    loadDefaultSong();
+  if (song) {
+    loadSong(song);
     playSong();
-    throw new Error('Không có bài hát nào trong danh sách!');
+    return;
   }
 
-  loadSong(song);
-
+  loadDefaultSong();
   playSong();
+  showError('Không có bài hát nào trong danh sách!');
 }
 
 // Update progress bar
