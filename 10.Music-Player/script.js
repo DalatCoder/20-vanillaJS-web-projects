@@ -197,6 +197,14 @@ dom.search.addEventListener('focus', showSuggestsWindow);
 /////////////////////////////////////////////////////////////////
 //                        AJAX
 /////////////////////////////////////////////////////////////////
+
+dom.form.addEventListener('submit', catchAsyncException(onSearchRequest));
+
+dom.search.addEventListener(
+  'input',
+  catchAsyncException(debounce(onSearchRequest))
+);
+
 async function fetchSongs(songTitle) {
   const raw = await fetch(getQueryURL(songTitle));
   const response = await raw.json();
@@ -240,8 +248,6 @@ async function onSearchRequest(event) {
 
   showSuggest(songs);
 }
-
-dom.form.addEventListener('submit', catchAsyncException(onSearchRequest));
 
 function onSongClick(event) {
   if (event.target.tagName !== 'A') {
