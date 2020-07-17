@@ -211,6 +211,10 @@ async function fetchSongs(songTitle) {
   const raw = await fetch(getQueryURL(songTitle));
   const response = await raw.json();
 
+  if (!response.data || response.data.length === 0) {
+    throw new Error('Không tìm thấy bài hát!');
+  }
+
   const songs = response.data[0].song;
 
   if (!songs || songs.length === 0) {
