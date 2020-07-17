@@ -39,7 +39,7 @@ let songs;
 let songIndex;
 
 // Display song order in DOM
-let songOrder = 1;
+let songOrder;
 
 // Update song details
 function loadSong(song) {
@@ -70,6 +70,8 @@ function Init() {
 
   songs = loadSongsFromStorage() || [];
   songIndex = 0;
+  songOrder = 1;
+
   if (songs.length > 0) {
     songIndex = songs.length - 1;
   }
@@ -231,6 +233,14 @@ function createSongItemDOM(song) {
     .replace(/%song-duration%/g, song.duration)
     .replace(/%song-id%/g, song.id);
 
+  const deleteBtn = `
+    <div>
+      <button class="delete-btn">x</button>
+    </div>
+  `;
+
+  item.innerHTML += deleteBtn;
+
   return item;
 }
 
@@ -239,7 +249,11 @@ async function onSearchRequest(event) {
 
   event.preventDefault();
 
-  const songTitle = normalizeVietnameseString(dom.search.value);
+  const songTitle = normalizeVietnameseString(dom.search.value.trim());
+  if (songTitle.length < 2) {
+    hideSpinLoading();
+    return;
+  }
 
   const songs = await fetchSongs(songTitle);
   console.log(songs);
@@ -250,16 +264,26 @@ async function onSearchRequest(event) {
 }
 
 function onSongClick(event) {
-  if (event.target.tagName !== 'A') {
-    return;
+  if (event.target.tagName === 'A') {
+    const { songid } = event.target.dataset;
+
+    const song = songs.find((song) => song.id === songid);
+
+    loadSong(song);
+    playSong();
+  } else if (event.target.classList.contains('delete-btn')) {
+    const parentEl = event.target.parentNode.parentNode;
+    const anchorEl = parentEl.querySelector('a');
+
+    // console.dir(parentEl);
+
+    const { songid } = anchorEl.dataset;
+    deleteSong(songid);
+
+    // Reload UI
+    dom.listSong.innerHTML = '';
+    Init();
   }
-
-  const { songid } = event.target.dataset;
-
-  const song = songs.find((song) => song.id === songid);
-
-  loadSong(song);
-  playSong();
 }
 
 function showSuggest(songs) {
@@ -331,4 +355,8 @@ async function onSuggestClick(event) {
 
   // Clear search term
   dom.search.value = '';
+}
+
+function deleteSong(id) {
+  saveSongsToLocalStorage(songs.filter((el) => el.id !== id));
 }

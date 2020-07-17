@@ -139,6 +139,7 @@ body {
   margin: 10px 0;
   padding: 10px 0;
   display: flex;
+  position: relative; /* For position delete button */
 }
 
 .song:not(:last-of-type) {
@@ -198,6 +199,37 @@ body {
   margin-right: 10px;
   font-size: 15px;
   color: #dfdbdf;
+}
+
+.list-container .list .song .delete-btn {
+  border: none;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  line-height: 0;
+  font-weight: bold;
+  color: #fff;
+  background-color: #fe8daa;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  cursor: pointer;
+
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-70%) translateX(40px);
+
+  animation: fadeIn 0.5s ease;
+}
+
+.list-container .list .song:hover .delete-btn {
+  display: flex;
+  transform: translateY(-70%) translateX(0);
+}
+.list-container .list .song .delete-btn:focus {
+  outline: none;
 }
 
 .music-container {
