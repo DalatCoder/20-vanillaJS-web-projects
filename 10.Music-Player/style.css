@@ -295,7 +295,13 @@ body {
   font-size: 20px;
   cursor: pointer;
   padding: 10px;
-  margin: 0 20px;
+  margin: 0 15px;
+
+  transition: color .3s;
+}
+
+.action-btn:last-of-type {
+  margin-right: 0;
 }
 
 .action-btn:focus {
@@ -305,6 +311,10 @@ body {
 .action-btn.action-btn-big {
   color: #cdc2d0;
   font-size: 30px;
+}
+
+.action-btn.loop-active {
+  color: #949094;
 }
 
 .music-info {

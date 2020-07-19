@@ -4,6 +4,7 @@ const dom = (function () {
   const prevBtn = document.getElementById('prev');
   const playBtn = document.getElementById('play');
   const nextBtn = document.getElementById('next');
+  const loopBtn = document.getElementById('loop');
 
   const audio = document.getElementById('audio');
   const progress = document.getElementById('progress');
@@ -21,6 +22,7 @@ const dom = (function () {
     prevBtn,
     playBtn,
     nextBtn,
+    loopBtn,
     audio,
     progress,
     progressContainer,
@@ -37,6 +39,8 @@ let songs;
 
 // Keep track of song is playing
 let songIndex;
+
+let isLoop = false;
 
 // Display song order in DOM
 let songOrder;
@@ -114,6 +118,16 @@ function pauseSong() {
   dom.audio.pause();
 }
 
+// Toggle loop status
+function loopSong() {
+  dom.loopBtn.classList.toggle('loop-active');
+  if (!isLoop) {
+    isLoop = true;
+  } else {
+    isLoop = false;
+  }
+}
+
 // Previous song
 function prevSong() {
   songIndex--;
@@ -154,6 +168,16 @@ function nextSong() {
   showError('Không có bài hát nào trong danh sách!');
 }
 
+function onSongEnds() {
+  if (!isLoop) {
+    pauseSong()
+    return
+  }
+
+  // Play song at current songIndex
+  playSong();
+}
+
 // Update progress bar
 function updateProgressBar(e) {
   const { duration, currentTime } = e.srcElement;
@@ -177,12 +201,13 @@ dom.playBtn.addEventListener('click', toggleStatus);
 // Change song
 dom.prevBtn.addEventListener('click', prevSong);
 dom.nextBtn.addEventListener('click', nextSong);
+dom.loopBtn.addEventListener('click', loopSong);
 
 // Time update
 dom.audio.addEventListener('timeupdate', updateProgressBar);
 
 // Song ends
-dom.audio.addEventListener('ended', pauseSong);
+dom.audio.addEventListener('ended', onSongEnds);
 
 // Click on progress bar
 dom.progressContainer.addEventListener('click', setProgressBar);
