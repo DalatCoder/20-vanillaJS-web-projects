@@ -53,6 +53,12 @@ dom.text.focus();
 // Start counting down
 let timeInterval = setInterval(updateTime, 1000);
 
+// Init difficulty level
+let difficulty = localStorage.getItem('difficulty') || 'medium';
+
+// Set value of difficulty to DOM
+dom.difficultySelect.value = difficulty;
+
 function getRandomWord() {
   return words[Math.floor(Math.random() * words.length)];
 }
@@ -103,12 +109,22 @@ dom.text.addEventListener('input', e => {
     // Clear input
     e.target.value = '';
 
-    time += 5;
+    if (difficulty === 'hard') {
+      time += 2;
+    } else if (difficulty === 'medium') {
+      time += 3;
+    } else {
+      time += 4;
+    }
   }
 })
 
+dom.settingsBtn.addEventListener('click', () => {
+  dom.settings.classList.toggle('hide')
+})
 
-
-
-
+dom.settingsForm.addEventListener('change', e => {
+  difficulty = e.target.value;
+  localStorage.setItem('difficulty', difficulty);
+})
 
