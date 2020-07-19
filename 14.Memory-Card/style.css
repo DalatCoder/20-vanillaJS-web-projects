@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+
 *,
 *::before,
 *::after {
@@ -8,4 +10,119 @@
 
 body {
   box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
 }
+
+h1 {
+  position: relative;
+}
+
+h1 button {
+  position: absolute;
+  transform: translate(10%, -50%);
+  z-index: 2;
+}
+
+.btn {
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  font-size: 14px;
+  margin-top: 20px;
+  padding: 10px 15px;
+}
+
+.btn-small {
+  font-size: 12px;
+  padding: 5px 10px;
+}
+
+.btn-ghost {
+  border: none;
+  background-color: transparent;
+}
+
+.clear {
+  position: absolute;
+  left: 30px;
+  bottom: 30px;
+}
+
+.cards {
+  perspective: 1000px;
+  position: relative;
+  height: 350px;
+  width: 500px;
+  max-width: 100%;
+  margin-top: 30px;
+}
+
+.card {
+  position: absolute;
+  opacity: 0;
+  font-size: 1.5em;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.card.active {
+  cursor: pointer;
+  opacity: 1;
+  z-index: 10;
+}
+
+.inner-card {
+  box-shadow: 0 1px 10px rgba(0, 0, 0, .3);
+  border-radius: 5px;
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.inner-card-front, .inner-card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  background: #fff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
